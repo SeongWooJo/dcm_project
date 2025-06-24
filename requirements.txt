@@ -1,0 +1,7 @@
+numpy
+pydicom
+highdicom
+SimpleITK
+matplotlib
+pillow
+requests

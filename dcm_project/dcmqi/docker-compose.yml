@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  dcmqi:
+    image: qiicr/dcmqi:latest
+    container_name: dcmqi_container
+    volumes:
+      - ./docker_data:/data
+    entrypoint: tail -f /dev/null

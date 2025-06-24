@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dcm-auto
+    volumes:
+      - .:/app
+    working_dir: /app
+    
+  dcmqi:
+    image: qiicr/dcmqi:latest
+    container_name: dcmqi_container
+    volumes:
+      - ./docker_data:/data
+    entrypoint: tail -f /dev/null
+    command: ["python", "main.py"]
