@@ -10,17 +10,9 @@ import os
 import numpy as np
 
 import dcm_project.read.filter as filter
+from typing import List
 
-def create_dicom_seg(dicom_dir, nii_path, output_path):
-    # 1. Load DICOM reference series
-    dicom_files = sorted(
-        [pydicom.dcmread(os.path.join(dicom_dir, f)) for f in os.listdir(dicom_dir) if f.endswith('.dcm')],
-        key=lambda x: int(x.InstanceNumber)
-    )
-    dicom_files = filter.sanitize_filter(dicom_files)
-    # 2. Load NIfTI segmentation
-    sitk_seg = sitk.ReadImage(nii_path)
-
+def create_dicom_seg(dicom_files: List[pydicom.Dataset], sitk_seg: sitk.Image, output_path):
     origin = sitk_seg.GetOrigin()           # (x0, y0, z0)
     spacing = sitk_seg.GetSpacing()         # (sx, sy, sz)
     size = sitk_seg.GetSize()               # (nx, ny, nz)
@@ -115,7 +107,7 @@ def create_dicom_seg(dicom_dir, nii_path, output_path):
     seg = Segmentation(
         source_images=dicom_files,
         pixel_array=seg_data,              # (2*Z, Y, X)
-        segmentation_type="BINARY",                  # ✅ 핵심 변경점
+        segmentation_type="LABELMAP",                  # ✅ 핵심 변경점
         segment_descriptions=segment_descriptions,
         series_instance_uid=pydicom.uid.generate_uid(),
         series_number=300,
@@ -125,10 +117,10 @@ def create_dicom_seg(dicom_dir, nii_path, output_path):
         manufacturer_model_name="YourSegmentationModel",
         software_versions="1.0.0",
         device_serial_number="SN-001",
-        # pixel_measures=pixel_measures,
-        # plane_orientation=plane_orientation,
-        # plane_positions=plane_positions,         # ✅ frame 수 = Z * 2
-        # omit_empty_frames=False
+        pixel_measures=pixel_measures,
+        plane_orientation=plane_orientation,
+        plane_positions=plane_positions,         # ✅ frame 수 = Z * 2
+        omit_empty_frames=False
     )
     seg.SeriesDescription = "Segmentation"
     # 5. Save to DICOM SEG file

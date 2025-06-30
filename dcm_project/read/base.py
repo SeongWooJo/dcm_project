@@ -74,3 +74,20 @@ def print_unique_series(dicom_files : List[pydicom.Dataset]) -> None:
     print("\n[📋 Unique Series List]")
     for sn, desc, ce, axis in sorted(unique_series):
         print(f"Series Number: {sn}, Description: {desc}, Contrast: {ce}, Image : {axis}")
+
+def save_dicom_files(dicom_files : List[pydicom.Dataset], output_dir : str) -> None:
+    os.makedirs(output_dir, exist_ok=True)
+
+    # SeriesNumber → InstanceNumber 순으로 정렬
+    sorted_dicom_files = sorted(
+        dicom_files,
+        key=lambda ds: (int(ds.SeriesNumber), int(ds.InstanceNumber))
+    )
+
+    # 저장
+    for idx, ds in enumerate(sorted_dicom_files, start=1):
+        filename = f"{idx:05d}.dcm"
+        save_path = os.path.join(output_dir, filename)
+        ds.save_as(save_path)
+
+    print(f"[✓] {len(sorted_dicom_files)} DICOM 파일 저장 완료: {output_dir}")

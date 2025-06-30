@@ -24,7 +24,7 @@ def move_input(dicom_files : List[pydicom.Dataset], nii_image : sitk.Image, temp
         save_path = os.path.join(temp_dicom_dir, filename)
         ds.save_as(save_path)
 
-    sitk.WriteImage(nii_image, os.path.join(temp_dicom_dir, 'seg.nii.gz'))
+    sitk.WriteImage(nii_image, os.path.join(temp_dir, 'seg.nii.gz'))
     print(f"[+] DICOM files and NIfTI image moved to {temp_dicom_dir}")
 
     unique_list = np.unique(nii_image)

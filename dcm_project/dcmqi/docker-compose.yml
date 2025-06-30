@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   dcmqi:
@@ -6,4 +6,5 @@ services:
     container_name: dcmqi_container
     volumes:
       - ./docker_data:/data
+      - ./docker_function.py:/app/docker_function.py
     entrypoint: tail -f /dev/null

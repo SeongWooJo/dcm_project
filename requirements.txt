@@ -5,3 +5,4 @@ SimpleITK
 matplotlib
 pillow
 requests
+scipy
